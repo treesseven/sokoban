@@ -49,6 +49,8 @@ image = {
     "box"   : pygame.image.load("./images/box.png"),
     "door"  : pygame.image.load("./images/door.png")
 }
+pygame.mixer.music.load("./music/backgroundmusic.wav")
+pygame.mixer.music.play(-1, 0.0)
 
 gameFont = pygame.font.SysFont("arial.ttf", 30)
 
@@ -129,7 +131,7 @@ def overlap(object, anotherObject):
 fill_gameBound()
 
 def gameovercheck():
-    global GAME
+    global GAME, PLAYER_RECENT_STATE
     doorsLeft = len(DOORS)
 
     for box in BOXES:
@@ -139,6 +141,7 @@ def gameovercheck():
 
     if doorsLeft == 0:
         SCREEN_SURF.blit(textSurf["WIN"], (700, 200))
+        PLAYER_RECENT_STATE = "DOWN"
         GAME = DONE
 
 while True :
