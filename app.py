@@ -25,15 +25,17 @@ BOXES = [b]
 d = {"x": 4, "y": 4}
 DOORS = [d]
 WALLS = []
-
 ##COLOR                 R     G     B
 
-BGCOLOR =               (98,  140,  102)
-PANEBGCOLOR =           (158, 199,  162)
-BLUE =                  (0,     0,  255)
+BGCOLOR         =       (98,  140,  102)
+PANELBGCOLOR    =       (158, 199,  162)
+BLUE            =       (0,     0,  255)
+RED             =       (255,   0,  0  )
+GREEN           =       (0,   255,  0  )
 
 ## import needed framework and modules
-import pygame, time
+import pygame, time, sys
+pygame.init()
 
 ##GAME PRELOAD
 image = {
@@ -46,28 +48,20 @@ image = {
     "wall"  : pygame.image.load("./images/wall.png"),
     "box"   : pygame.image.load("./images/box.png"),
     "door"  : pygame.image.load("./images/door.png")
-
 }
 
-pygame.init()
+gameFont = pygame.font.SysFont("arial.ttf", 30)
+
+textSurf = {
+    "WIN"   :   gameFont.render("CONGRATULATION !", True, RED),
+    "LOSE"  :   gameFont.render("GOOD LUCK NEXT TIME :)", True, GREEN)
+}
+
 SCREEN_SURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("SOKOBAN")
+
 GAME = True
 walls = []
-
-
-def update_playerPos(dx, dy):
-    if collide(P, WALLS, dx, dy) is None:
-
-        if collide(P, BOXES, dx, dy) is not None:
-            box = collide(P, BOXES, dx, dy)
-            if collide(box, WALLS, dx, dy) is None:
-                print("vao")
-                P["x"], P["y"] = move(P, dx, dy)
-                box["x"], box["y"] = move(box, dx, dy)
-        else:
-            P["x"], P["y"] = move(P, dx, dy)
-
 
 def fill_gameBound():
     for y in range(WORLDBOUND_HEIGHT):
@@ -104,6 +98,19 @@ def drawMap():
                                     PADDLE + (b["y"] + 1) * SPRITE_SIZE))
 
 
+## Main Process
+
+def game_update(dx, dy):
+    if collide(P, WALLS, dx, dy) is None:
+
+        if collide(P, BOXES, dx, dy) is not None:
+            box = collide(P, BOXES, dx, dy)
+            if collide(box, WALLS, dx, dy) is None:
+                P["x"], P["y"] = move(P, dx, dy)
+                box["x"], box["y"] = move(box, dx, dy)
+        else:
+            P["x"], P["y"] = move(P, dx, dy)
+
 def move(object, dx, dy):
     return object["x"] + dx, object["y"] + dy
 
@@ -114,42 +121,61 @@ def collide(object, others, dx, dy):
             return anotherObject
     return None
 
+def overlap(object, anotherObject):
+    if object["x"] == anotherObject["x"] and object["y"] == anotherObject["y"] :
+        return True
+    return False
+
 fill_gameBound()
 
-while GAME is not DONE :
+def gameovercheck():
+    global GAME
+    doorsLeft = len(DOORS)
+
+    for box in BOXES:
+        for door in DOORS:
+            if overlap(box, door) :
+                doorsLeft -= 1
+
+    if doorsLeft == 0:
+        SCREEN_SURF.blit(textSurf["WIN"], (700, 200))
+        GAME = DONE
+
+while True :
     dx = 0
     dy = 0
     for event in pygame.event.get():
         ## trường hợp người chơi chán quá muốn quit
         if event.type == pygame.QUIT:
-            DONE = True
-
+            pygame.quit()
+            sys.exit()
         ## trường hợp người chơi di chuyển nhân vật
+        if GAME is not DONE:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    # P["x"] -= 1
+                    dx -= 1
+                    PLAYER_RECENT_STATE = "LEFT"
+                if event.key == pygame.K_RIGHT:
+                    # P["x"] += 1
+                    dx += 1
+                    PLAYER_RECENT_STATE = "RIGHT"
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                # P["x"] -= 1
-                dx -= 1
-                PLAYER_RECENT_STATE = "LEFT"
-            if event.key == pygame.K_RIGHT:
-                # P["x"] += 1
-                dx += 1
-                PLAYER_RECENT_STATE = "RIGHT"
+                if event.key == pygame.K_UP:
+                    # P["y"] -= 1
+                    dy -= 1
+                    PLAYER_RECENT_STATE = "UP"
 
-            if event.key == pygame.K_UP:
-                # P["y"] -= 1
-                dy -= 1
-                PLAYER_RECENT_STATE = "UP"
+                if event.key == pygame.K_DOWN:
+                    # P["y"] += 1
+                    dy += 1
+                    PLAYER_RECENT_STATE = "DOWN"
 
-            if event.key == pygame.K_DOWN:
-                # P["y"] += 1
-                dy += 1
-                PLAYER_RECENT_STATE = "DOWN"
-
-    update_playerPos(dx, dy)
+    game_update(dx, dy)
     SCREEN_SURF.fill(BGCOLOR)
-    pygame.draw.rect(SCREEN_SURF, PANEBGCOLOR, (50, 50, WORLDBOUND_WIDTH * SPRITE_SIZE, WORLDBOUND_HEIGHT * SPRITE_SIZE))
+    pygame.draw.rect(SCREEN_SURF, PANELBGCOLOR, (50, 50, WORLDBOUND_WIDTH * SPRITE_SIZE, WORLDBOUND_HEIGHT * SPRITE_SIZE))
     drawMap()
+    gameovercheck()
     pygame.display.update()
 
 
