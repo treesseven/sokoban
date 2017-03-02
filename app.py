@@ -20,10 +20,17 @@ GAMEBOUND_HEIGHT = WORLDBOUND_HEIGHT - 2
 PLAYER_RECENT_STATE = "DOWN"
 
 P = {"x": 2, "y": 2}
-b = {"x": 3, "y": 3}
-BOXES = [b]
+box = {"x": 3, "y": 3}
+
+BOXES = [box,
+         {"x" : 1, "y" : 1},
+         {"x" : 2, "y" : 4}
+         ]
 d = {"x": 4, "y": 4}
-DOORS = [d]
+DOORS = [d,
+         {"x" : 1, "y": 2},
+         {"x" : 3, "y": 4}
+         ]
 WALLS = []
 ##COLOR                 R     G     B
 
@@ -87,8 +94,9 @@ def drawMap():
             SCREEN_SURF.blit(image["wall"],(PADDLE + x * SPRITE_SIZE, PADDLE + y * SPRITE_SIZE))
 
     ## add door
-    SCREEN_SURF.blit(image["door"], (PADDLE + DOOR_PADDLE + (d["x"] + 1) * SPRITE_SIZE,
-                                     PADDLE + DOOR_PADDLE + (d["y"] + 1) * SPRITE_SIZE))
+    for door in DOORS:
+        SCREEN_SURF.blit(image["door"], (PADDLE + DOOR_PADDLE + (door["x"] + 1) * SPRITE_SIZE,
+                                         PADDLE + DOOR_PADDLE + (door["y"] + 1) * SPRITE_SIZE))
 
     ## add người chơi
 
@@ -96,8 +104,9 @@ def drawMap():
                                        PADDLE + (P["y"] + 1) * SPRITE_SIZE))
 
     ## add box
-    SCREEN_SURF.blit(image["box"], (PADDLE + (b["x"] + 1) * SPRITE_SIZE,
-                                    PADDLE + (b["y"] + 1) * SPRITE_SIZE))
+    for box in BOXES:
+        SCREEN_SURF.blit(image["box"], (PADDLE + (box["x"] + 1) * SPRITE_SIZE,
+                                        PADDLE + (box["y"] + 1) * SPRITE_SIZE))
 
 
 ## Main Process
