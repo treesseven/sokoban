@@ -18,20 +18,24 @@ PADDLE = 50
 GAMEBOUND_WIDTH = WORLDBOUND_WIDTH - 2
 GAMEBOUND_HEIGHT = WORLDBOUND_HEIGHT - 2
 PLAYER_RECENT_STATE = "DOWN"
-
-P = {"x": 2, "y": 2}
-box = {"x": 3, "y": 3}
-
-BOXES = [box,
-         {"x" : 1, "y" : 1},
-         {"x" : 2, "y" : 4}
-         ]
-d = {"x": 4, "y": 4}
-DOORS = [d,
-         {"x" : 1, "y": 2},
-         {"x" : 3, "y": 4}
-         ]
 WALLS = []
+
+def game_reset():
+    global P, BOXES, DOORS, GAME
+    P = {"x": 2, "y": 2}
+    box = {"x": 3, "y": 3}
+
+    BOXES = [box,
+             {"x" : 1, "y" : 1},
+             {"x" : 2, "y" : 4}
+             ]
+    d = {"x": 4, "y": 4}
+    DOORS = [d,
+             {"x" : 1, "y": 2},
+             {"x" : 3, "y": 4}
+             ]
+    GAME = True
+
 ##COLOR                 R     G     B
 
 BGCOLOR         =       (98,  140,  102)
@@ -69,10 +73,8 @@ textSurf = {
 SCREEN_SURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("SOKOBAN")
 
-GAME = True
-walls = []
-
 def fill_gameBound():
+    global WALLS
     for y in range(WORLDBOUND_HEIGHT):
         if y == 0 or y == WORLDBOUND_HEIGHT - 1:
             step = 1
@@ -115,8 +117,10 @@ def game_update(dx, dy):
     if collide(P, WALLS, dx, dy) is None:
 
         if collide(P, BOXES, dx, dy) is not None:
+            box = None;
             box = collide(P, BOXES, dx, dy)
-            if collide(box, WALLS, dx, dy) is None:
+            print(WALLS)
+            if collide(box, WALLS, dx, dy) is None and collide(box, BOXES, dx, dy) is None:
                 P["x"], P["y"] = move(P, dx, dy)
                 box["x"], box["y"] = move(box, dx, dy)
         else:
@@ -137,7 +141,7 @@ def overlap(object, anotherObject):
         return True
     return False
 
-fill_gameBound()
+
 
 def gameovercheck():
     global GAME, PLAYER_RECENT_STATE
@@ -153,6 +157,8 @@ def gameovercheck():
         PLAYER_RECENT_STATE = "DOWN"
         GAME = DONE
 
+game_reset()
+fill_gameBound()
 while True :
     dx = 0
     dy = 0
@@ -161,6 +167,9 @@ while True :
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                game_reset()
         ## trường hợp người chơi di chuyển nhân vật
         if GAME is not DONE:
             if event.type == pygame.KEYDOWN:
