@@ -22,15 +22,17 @@ WALLS = []
 
 def game_reset():
     global P, BOXES, DOORS, GAME
-    P = {"x": 2, "y": 2}
-    box = {"x": 3, "y": 3}
 
-    BOXES = [box,
+    P = {"x": 2, "y": 2}
+    sound_effect["win"].stop()
+    time.sleep(3)
+    pygame.mixer.music.play(-1, 0.0)
+    BOXES = [{"x": 3, "y": 3}  ,
              {"x" : 1, "y" : 1},
              {"x" : 2, "y" : 4}
              ]
-    d = {"x": 4, "y": 4}
-    DOORS = [d,
+
+    DOORS = [{"x": 4, "y": 4},
              {"x" : 1, "y": 2},
              {"x" : 3, "y": 4}
              ]
@@ -60,13 +62,19 @@ image = {
     "box"   : pygame.image.load("./images/box.png"),
     "door"  : pygame.image.load("./images/door.png")
 }
-pygame.mixer.music.load("./music/backgroundmusic.wav")
-pygame.mixer.music.play(-1, 0.0)
+
+sound_effect = {
+    "hitwall" : pygame.mixer.Sound("./music/hitwall1.wav"),
+    "boxindoor" : pygame.mixer.Sound("./music/boxindoor.wav"),
+    "boxhitbox" : pygame.mixer.Sound("./music/hitbox.wav"),
+    "win"       : pygame.mixer.Sound("./music/win.wav")
+}
+win_ = pygame.mixer.music.load("./music/backgroundmusic.wav")
 
 gameFont = pygame.font.SysFont("arial.ttf", 30)
 
 textSurf = {
-    "WIN"   :   gameFont.render("CONGRATULATION !", True, RED),
+    "WIN"   :   gameFont.render("CONGRATULATION !"      , True, RED),
     "LOSE"  :   gameFont.render("GOOD LUCK NEXT TIME :)", True, GREEN)
 }
 
@@ -110,10 +118,10 @@ def drawMap():
         SCREEN_SURF.blit(image["box"], (PADDLE + (box["x"] + 1) * SPRITE_SIZE,
                                         PADDLE + (box["y"] + 1) * SPRITE_SIZE))
 
-
 ## Main Process
 
 def game_update(dx, dy):
+    CURRENT_SOUND = None
     if collide(P, WALLS, dx, dy) is None:
 
         if collide(P, BOXES, dx, dy) is not None:
@@ -122,9 +130,17 @@ def game_update(dx, dy):
             print(WALLS)
             if collide(box, WALLS, dx, dy) is None and collide(box, BOXES, dx, dy) is None:
                 P["x"], P["y"] = move(P, dx, dy)
+                if collide(box, DOORS, dx, dy):
+                    CURRENT_SOUND = "boxindoor"
                 box["x"], box["y"] = move(box, dx, dy)
+            else:
+                CURRENT_SOUND = "boxhitbox"
         else:
             P["x"], P["y"] = move(P, dx, dy)
+
+    if CURRENT_SOUND is not None:
+        sound_effect[CURRENT_SOUND].play()
+
 
 def move(object, dx, dy):
     return object["x"] + dx, object["y"] + dy
@@ -141,8 +157,6 @@ def overlap(object, anotherObject):
         return True
     return False
 
-
-
 def gameovercheck():
     global GAME, PLAYER_RECENT_STATE
     doorsLeft = len(DOORS)
@@ -156,6 +170,9 @@ def gameovercheck():
         SCREEN_SURF.blit(textSurf["WIN"], (700, 200))
         PLAYER_RECENT_STATE = "DOWN"
         GAME = DONE
+        pygame.mixer.music.stop()
+        sound_effect["win"].play()
+
 
 game_reset()
 fill_gameBound()
@@ -193,20 +210,9 @@ while True :
                     PLAYER_RECENT_STATE = "DOWN"
 
     game_update(dx, dy)
+
     SCREEN_SURF.fill(BGCOLOR)
     pygame.draw.rect(SCREEN_SURF, PANELBGCOLOR, (50, 50, WORLDBOUND_WIDTH * SPRITE_SIZE, WORLDBOUND_HEIGHT * SPRITE_SIZE))
     drawMap()
     gameovercheck()
     pygame.display.update()
-
-
-
-
-
-
-
-
-
-
-
-
