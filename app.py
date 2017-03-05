@@ -1,7 +1,7 @@
 ## set GAME CONFIGS
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 1000
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 640
 
 SPRITE_WIDTH = 40
 SPRITE_HEIGHT = 50
@@ -192,6 +192,7 @@ while True :
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     # P["x"] -= 1
+                    print("vao")
                     dx -= 1
                     PLAYER_RECENT_STATE = "LEFT"
                 if event.key == pygame.K_RIGHT:
