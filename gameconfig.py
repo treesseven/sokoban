@@ -17,12 +17,13 @@ GAME_LEVEL = 13
 
 ##COLOR                 R     G     B
 
-BGCOLOR         =       (98,  140,  102)
+BGCOLOR         =       (52,  152,  219)
 PANELBGCOLOR    =       (158, 199,  162)
 BLUE            =       (0,     0,  255)
 RED             =       (255,   0,  0  )
 GREEN           =       (0,   255,  0  )
-BLACK           =       (255, 255,  255)
+WHITE           =       (255, 255,  255)
+BLACK           =       (0  ,   0,    0)
 
 ##sound and images
 
@@ -41,6 +42,7 @@ image = {
     },
     "wall"  : pygame.image.load("./images/wall.png"),
     "door"  : pygame.image.load("./images/door.png"),
+    "ground": pygame.image.load("./images/ground.png"),
     "loading_screen" : pygame.image.load("./images/loading_screen.png")
 }
 
@@ -51,10 +53,15 @@ sound_effect = {
     "win"       : pygame.mixer.Sound("./music/win.wav")
 }
 
-gameFont = pygame.font.SysFont("arial.ttf", 30)
+gameFont_30 = pygame.font.SysFont("arial.ttf", 30)
+gameFont_50 = pygame.font.SysFont("arial.ttf", 50)
+
 
 textSurf = {
-    "win"           :   gameFont.render("CONGRATULATION !"      , True, RED),
-    "lose"          :   gameFont.render("GOOD LUCK NEXT TIME :)", True, GREEN),
-    "loading_screen":   gameFont.render("PRESS SPACE TO START"  , True,  )
+    "win"           :   gameFont_50.render("CONGRATULATION !"      , True, RED),
+    "lose"          :   gameFont_30.render("GOOD LUCK NEXT TIME :)", True, GREEN),
+    "loading_screen":   gameFont_30.render("PRESS SPACE TO START"  , True, WHITE),
+    "next_level"    :   gameFont_30.render("PRESS N TO MOVE TO NEXT LEVEL", True, WHITE),
+    "back_level"    :   gameFont_30.render("PRESS B TO BACK TO PREVIOUS GAME", True, WHITE),
+    "reset_level"   :   gameFont_30.render("PRESS R TO PLAY AGAIN", True, WHITE)
 }
