@@ -1,10 +1,11 @@
-from door import Door
-from player import Player
-from box import Box
-from wall import Wall
-from ground import Ground
+import sys
+
+from entity.door import Door
+from entity.ground import Ground
+from entity.wall import Wall
 from gameconfig import *
-import pygame, sys, time
+from sprites.box import Box
+from sprites.player import Player
 
 ##GAME PRELOAD
 
