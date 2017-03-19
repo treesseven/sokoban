@@ -195,7 +195,6 @@ class Map:
                     self.add_text("win", 600, 100)
                 elif pygame.time.get_ticks() - self.time >= 800:
                     self.time = pygame.time.get_ticks()
-                    print(self.time)
 
                 self.player.state = "DOWN"
                 if not self.played_sound:

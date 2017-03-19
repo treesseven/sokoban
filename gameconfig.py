@@ -29,6 +29,9 @@ BLACK           =       (0  ,   0,    0)
 
 import pygame
 pygame.init()
+
+# IMAGES
+
 image = {
     "player": {
         "DOWN"  : pygame.image.load("./images/playerdown.png"),
@@ -37,7 +40,7 @@ image = {
         "RIGHT" : pygame.image.load("./images/playerright.png")
     },
     "box"   : {
-        "norm"      : pygame.image.load("./images/box.png"),
+        "norm"      : pygame.image.load("./images/box2.png"),
         "overlapped": pygame.image.load("./images/boxoverlapped.png")
     },
     "wall"  : pygame.image.load("./images/wall.png"),
@@ -45,6 +48,7 @@ image = {
     "ground": pygame.image.load("./images/ground.png"),
     "loading_screen" : pygame.image.load("./images/loading_screen.png")
 }
+
 
 sound_effect = {
     "box_deny" : pygame.mixer.Sound("./music/hitwall1.wav"),

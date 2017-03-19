@@ -41,7 +41,6 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         pygame.time.delay(1000)
